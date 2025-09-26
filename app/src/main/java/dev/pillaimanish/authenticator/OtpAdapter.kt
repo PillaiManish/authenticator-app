@@ -24,28 +24,36 @@ class OtpAdapter(
     private val handler = Handler(Looper.getMainLooper())
     private val updateRunnable = object : Runnable {
         override fun run() {
-            // Only update if any OTP needs refresh
-            var needsUpdate = false
+            // Always update the timer display every second
+            // Check if any OTP needs refresh for OTP generation
+            var needsOtpRefresh = false
             for (item in otpItems) {
                 if (item.needsRefresh()) {
-                    needsUpdate = true
+                    needsOtpRefresh = true
                     break
                 }
             }
             
-            if (needsUpdate) {
-                notifyDataSetChanged()
-            }
+            // Always update UI to refresh timer display
+            notifyDataSetChanged()
             
             // Schedule next check in 1 second
             handler.postDelayed(this, 1000)
         }
     }
 
+    private var isInitialized = false
+    
     init {
         loadFromCache()
         handler.post(updateRunnable)
+        isInitialized = true
     }
+    
+    /**
+     * Check if adapter is initialized
+     */
+    fun isInitialized(): Boolean = isInitialized
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OtpViewHolder {
         val binding = ItemOtpBinding.inflate(
@@ -63,9 +71,13 @@ class OtpAdapter(
     override fun getItemCount(): Int = otpItems.size
 
     fun updateOtpItems(newOtpItem: OtpItem) {
-        otpItems.add(newOtpItem)
-        dataManager.addOtpItem(newOtpItem)
-        notifyDataSetChanged()
+        // Check if OTP with same secret already exists to prevent duplicates
+        val existingItem = otpItems.find { it.secret == newOtpItem.secret && it.issuer == newOtpItem.issuer }
+        if (existingItem == null) {
+            otpItems.add(newOtpItem)
+            dataManager.addOtpItem(newOtpItem)
+            notifyDataSetChanged()
+        }
     }
 
     fun removeOtpItem(otpItemId: String) {
@@ -78,6 +90,17 @@ class OtpAdapter(
         otpItems.clear()
         dataManager.clearAllOtpItems()
         notifyDataSetChanged()
+    }
+    
+    /**
+     * Get OTP item at specific position
+     */
+    fun getItemAt(position: Int): OtpItem {
+        return if (position >= 0 && position < otpItems.size) {
+            otpItems[position]
+        } else {
+            throw IndexOutOfBoundsException("Position $position is out of bounds for list of size ${otpItems.size}")
+        }
     }
 
     private fun loadFromCache() {
@@ -116,6 +139,11 @@ class OtpAdapter(
                 // Update timer with color coding
                 val remainingTime = otpItem.getRemainingTime()
                 timerText.text = "${remainingTime}s"
+                
+                // Debug logging for timer issues
+                if (remainingTime <= 0 || remainingTime > 30) {
+                    android.util.Log.w("OtpAdapter", "Invalid timer value: ${remainingTime}s for ${otpItem.issuer}")
+                }
                 
                 // Change timer color based on remaining time
                 val context = timerText.context

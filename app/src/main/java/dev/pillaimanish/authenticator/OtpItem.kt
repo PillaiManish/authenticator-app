@@ -115,7 +115,9 @@ data class OtpItem(
      */
     fun getRemainingTime(): Int {
         val currentTime = System.currentTimeMillis() / 1000
-        val remaining = (otpExpiryTime - currentTime).toInt()
+        val timeStep = currentTime / period
+        val nextExpiryTime = (timeStep + 1) * period
+        val remaining = (nextExpiryTime - currentTime).toInt()
         return if (remaining > 0) remaining else 0
     }
     
@@ -124,7 +126,9 @@ data class OtpItem(
      */
     fun needsRefresh(): Boolean {
         val currentTime = System.currentTimeMillis() / 1000
-        return currentTime >= otpExpiryTime
+        val timeStep = currentTime / period
+        val currentExpiryTime = (timeStep + 1) * period
+        return currentTime >= currentExpiryTime
     }
     
     /**

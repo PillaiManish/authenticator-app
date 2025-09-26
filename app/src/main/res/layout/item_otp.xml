@@ -17,17 +17,6 @@
         android:padding="12dp">
 
         <!-- Account Icon -->
-        <ImageView
-            android:id="@+id/account_icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/circle_background"
-            android:contentDescription="Account icon"
-            android:padding="12dp"
-            android:src="@drawable/ic_account"
-            app:tint="@android:color/white" />
 
         <!-- Account Info -->
         <LinearLayout
@@ -88,6 +77,8 @@
                 tools:text="15s" />
 
         </LinearLayout>
+
+        <!-- Swipe hint -->
 
     </LinearLayout>
 

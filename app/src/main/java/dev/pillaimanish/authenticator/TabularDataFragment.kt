@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dev.pillaimanish.authenticator.databinding.FragmentTabularDataBinding
 
 /**
@@ -30,7 +32,11 @@ class TabularDataFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
+        
+        // Only setup if not already initialized (prevents duplication on theme changes)
+        if (!::otpAdapter.isInitialized) {
+            setupRecyclerView()
+        }
         observeQrScanResult()
     }
     
@@ -52,6 +58,101 @@ class TabularDataFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = otpAdapter
         }
+        
+        // Setup swipe-to-delete functionality
+        setupSwipeToDelete()
+    }
+    
+    private fun setupSwipeToDelete() {
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false // We don't support drag and drop
+            }
+            
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) return
+                
+                val otpItem = otpAdapter.getItemAt(position)
+                
+                // Show confirmation dialog
+                showDeleteConfirmationDialog(otpItem) {
+                    // User confirmed deletion
+                    otpAdapter.removeOtpItem(otpItem.id)
+                    android.widget.Toast.makeText(
+                        requireContext(),
+                        "Deleted: ${otpItem.getDisplayName()}",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+                }
+                
+                // Restore the item if user cancels (handled in dialog)
+                otpAdapter.notifyItemChanged(position)
+            }
+            
+            override fun onChildDraw(
+                c: android.graphics.Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    val itemView = viewHolder.itemView
+                    val background = android.graphics.drawable.ColorDrawable(
+                        requireContext().getColor(android.R.color.holo_red_dark)
+                    )
+                    val deleteIcon = requireContext().getDrawable(android.R.drawable.ic_menu_delete)
+                    
+                    // Draw background
+                    background.setBounds(
+                        itemView.left,
+                        itemView.top,
+                        itemView.left + dX.toInt(),
+                        itemView.bottom
+                    )
+                    background.draw(c)
+                    
+                    // Draw delete icon
+                    deleteIcon?.let { icon ->
+                        val iconSize = icon.intrinsicHeight
+                        val iconMargin = (itemView.height - iconSize) / 2
+                        icon.setBounds(
+                            itemView.left + iconMargin,
+                            itemView.top + iconMargin,
+                            itemView.left + iconMargin + iconSize,
+                            itemView.top + iconMargin + iconSize
+                        )
+                        icon.draw(c)
+                    }
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+        })
+        
+        itemTouchHelper.attachToRecyclerView(binding.tabularRecyclerView)
+    }
+    
+    private fun showDeleteConfirmationDialog(otpItem: OtpItem, onConfirm: () -> Unit) {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Delete OTP")
+            .setMessage("Are you sure you want to delete \"${otpItem.getDisplayName()}\"?")
+            .setPositiveButton("Delete") { _, _ ->
+                onConfirm()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(true)
+            .show()
     }
 
     private fun copyOtpToClipboard(otpCode: String) {
