@@ -1,5 +1,6 @@
 package dev.pillaimanish.authenticator
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.pillaimanish.authenticator.databinding.FragmentTabularDataBinding
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * Fragment displaying OTP codes with real-time countdown timers
@@ -96,6 +98,7 @@ class TabularDataFragment : Fragment() {
                 otpAdapter.notifyItemChanged(position)
             }
             
+            @SuppressLint("UseCompatLoadingForDrawables")
             override fun onChildDraw(
                 c: android.graphics.Canvas,
                 recyclerView: RecyclerView,

@@ -148,9 +148,9 @@ class OtpAdapter(
                 // Change timer color based on remaining time
                 val context = timerText.context
                 val timerColor = when {
-                    remainingTime <= 5 -> context.getColor(android.R.color.holo_red_dark)
-                    remainingTime <= 10 -> context.getColor(android.R.color.holo_orange_dark)
-                    else -> context.getColor(android.R.color.darker_gray)
+                    remainingTime <= 5 -> context.getColor(R.color.timer_critical)
+                    remainingTime <= 10 -> context.getColor(R.color.timer_warning)
+                    else -> context.getColor(R.color.accent_color)
                 }
                 timerText.setTextColor(timerColor)
 

@@ -4,12 +4,29 @@
     <color name="white">#FFFFFFFF</color>
     
     <!-- OTP App Colors - Light Theme -->
-    <color name="primary_color">#FF2196F3</color>
-    <color name="primary_dark">#FF1976D2</color>
-    <color name="otp_background">#FFF5F5F5</color>
-    <color name="otp_border">#FFE0E0E0</color>
-    <color name="otp_text_primary">#FF212121</color>
-    <color name="otp_text_secondary">#FF757575</color>
+    <color name="primary_color">#FF1976D2</color>
+    <color name="primary_dark">#FF0D47A1</color>
+    <color name="otp_background">#FFF8F9FA</color>
+    <color name="otp_border">#FF1976D2</color>
+    <color name="otp_text_primary">#FF1A1A1A</color>
+    <color name="otp_text_secondary">#FF424242</color>
     <color name="card_background">#FFFFFFFF</color>
-    <color name="account_icon_background">#FF2196F3</color>
+    <color name="account_icon_background">#FF1976D2</color>
+    
+    <!-- Enhanced Light Theme Colors -->
+    <color name="background_primary">#FFF5F5F5</color>
+    <color name="background_secondary">#FFFFFFFF</color>
+    <color name="surface_color">#FFF8F9FA</color>
+    <color name="text_primary">#FF1A1A1A</color>
+    <color name="text_secondary">#FF424242</color>
+    <color name="text_tertiary">#FF757575</color>
+    <color name="accent_color">#FF1976D2</color>
+    <color name="success_color">#FF388E3C</color>
+    <color name="warning_color">#FFF57C00</color>
+    <color name="error_color">#FFD32F2F</color>
+    
+    <!-- Timer Colors -->
+    <color name="timer_normal">#FF1976D2</color>
+    <color name="timer_warning">#FFF57C00</color>
+    <color name="timer_critical">#FFD32F2F</color>
 </resources>

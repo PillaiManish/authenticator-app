@@ -1,85 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
-    android:background="@color/card_background"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    app:cardUseCompatPadding="true">
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_margin="0dp"
+    android:background="@android:color/transparent"
+    android:divider="@drawable/separator_line"
+    android:showDividers="end">
 
+    <!-- Top Row: Issuer + Timer -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
 
-        <!-- Account Icon -->
-
-        <!-- Account Info -->
-        <LinearLayout
+        <!-- Issuer Name -->
+        <TextView
+            android:id="@+id/account_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"
+            tools:text="Google" />
 
-            <TextView
-                android:id="@+id/account_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-                android:textColor="@color/otp_text_primary"
-                tools:text="Google" />
-
-            <TextView
-                android:id="@+id/account_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:textColor="@color/otp_text_secondary"
-                tools:text="user@gmail.com" />
-
-        </LinearLayout>
-
-        <!-- OTP Code and Timer -->
-        <LinearLayout
+        <!-- Timer -->
+        <TextView
+            android:id="@+id/timer_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <!-- OTP Code -->
-            <TextView
-                android:id="@+id/otp_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/otp_background"
-                android:fontFamily="monospace"
-                android:padding="12dp"
-                android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
-                android:textColor="@color/otp_text_primary"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                tools:text="123456" />
-
-            <!-- Timer -->
-            <TextView
-                android:id="@+id/timer_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-                android:textColor="@color/otp_text_secondary"
-                tools:text="15s" />
-
-        </LinearLayout>
-
-        <!-- Swipe hint -->
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="@color/accent_color"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            tools:text="15s" />
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    <!-- Bottom Row: Email + OTP -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Email -->
+        <TextView
+            android:id="@+id/account_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="@color/text_secondary"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif-light"
+            tools:text="user@gmail.com" />
+
+        <!-- OTP Code -->
+        <TextView
+            android:id="@+id/otp_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textAppearance="@style/TextAppearance.Material3.DisplayMedium"
+            android:textColor="@color/accent_color"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15"
+            tools:text="123 456" />
+
+    </LinearLayout>
+
+</LinearLayout>
