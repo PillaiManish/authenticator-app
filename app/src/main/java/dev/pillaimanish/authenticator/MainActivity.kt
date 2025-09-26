@@ -45,7 +45,13 @@ override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when(item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                // Clear all OTP data
+                val dataManager = OtpDataManager(this)
+                dataManager.clearAllOtpItems()
+                android.widget.Toast.makeText(this, "All OTP data cleared", android.widget.Toast.LENGTH_SHORT).show()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

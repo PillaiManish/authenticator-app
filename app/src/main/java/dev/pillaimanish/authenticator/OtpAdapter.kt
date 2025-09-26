@@ -1,5 +1,6 @@
 package dev.pillaimanish.authenticator
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -13,19 +14,36 @@ import dev.pillaimanish.authenticator.databinding.ItemOtpBinding
  * RecyclerView adapter for displaying OTP items with real-time countdown timers
  */
 class OtpAdapter(
-    private var otpItems: List<OtpItem>,
+    private val context: Context,
     private val onItemClick: (OtpItem) -> Unit = {}
 ) : RecyclerView.Adapter<OtpAdapter.OtpViewHolder>() {
+
+    private val otpItems = mutableListOf<OtpItem>()
+    private val dataManager = OtpDataManager(context)
 
     private val handler = Handler(Looper.getMainLooper())
     private val updateRunnable = object : Runnable {
         override fun run() {
-            notifyDataSetChanged()
-            handler.postDelayed(this, 1000) // Update every second
+            // Only update if any OTP needs refresh
+            var needsUpdate = false
+            for (item in otpItems) {
+                if (item.needsRefresh()) {
+                    needsUpdate = true
+                    break
+                }
+            }
+            
+            if (needsUpdate) {
+                notifyDataSetChanged()
+            }
+            
+            // Schedule next check in 1 second
+            handler.postDelayed(this, 1000)
         }
     }
 
     init {
+        loadFromCache()
         handler.post(updateRunnable)
     }
 
@@ -44,8 +62,37 @@ class OtpAdapter(
 
     override fun getItemCount(): Int = otpItems.size
 
-    fun updateOtpItems(newOtpItems: List<OtpItem>) {
-        otpItems = newOtpItems
+    fun updateOtpItems(newOtpItem: OtpItem) {
+        otpItems.add(newOtpItem)
+        dataManager.addOtpItem(newOtpItem)
+        notifyDataSetChanged()
+    }
+
+    fun removeOtpItem(otpItemId: String) {
+        otpItems.removeAll { it.id == otpItemId }
+        dataManager.removeOtpItem(otpItemId)
+        notifyDataSetChanged()
+    }
+
+    fun clearAllOtpItems() {
+        otpItems.clear()
+        dataManager.clearAllOtpItems()
+        notifyDataSetChanged()
+    }
+
+    private fun loadFromCache() {
+        val cachedItems = dataManager.loadOtpItems()
+        otpItems.clear()
+        otpItems.addAll(cachedItems)
+    }
+    
+    /**
+     * Refresh all OTPs (useful when app resumes after being closed)
+     */
+    fun refreshAllOtps() {
+        for (item in otpItems) {
+            item.refreshOtp()
+        }
         notifyDataSetChanged()
     }
 

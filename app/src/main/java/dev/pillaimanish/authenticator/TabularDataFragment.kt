@@ -19,7 +19,6 @@ class TabularDataFragment : Fragment() {
     private val binding get() = _binding!!
     
     private lateinit var otpAdapter: OtpAdapter
-    private val sampleOtpItems = createSampleOtpItems().toMutableList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,9 +33,17 @@ class TabularDataFragment : Fragment() {
         setupRecyclerView()
         observeQrScanResult()
     }
+    
+    override fun onResume() {
+        super.onResume()
+        // Refresh all OTPs when app resumes (handles device restart case)
+        if (::otpAdapter.isInitialized) {
+            otpAdapter.refreshAllOtps()
+        }
+    }
 
     private fun setupRecyclerView() {
-        otpAdapter = OtpAdapter(sampleOtpItems) { otpItem ->
+        otpAdapter = OtpAdapter(requireContext()) { otpItem ->
             // Handle OTP item click - could copy to clipboard, show details, etc.
             copyOtpToClipboard(otpItem.generateCurrentOtp())
         }
@@ -61,44 +68,42 @@ class TabularDataFragment : Fragment() {
         ).show()
     }
 
-    private fun createSampleOtpItems(): List<OtpItem> {
-        return listOf(
-            OtpItem(
-                id = "1",
-                issuer = "Google",
-                accountName = "user@gmail.com",
-                secret = "JBSWY3DPEHPK3PXP"
-            ),
-            OtpItem(
-                id = "2",
-                issuer = "Microsoft",
-                accountName = "user@outlook.com",
-                secret = "JBSWY3DPEHPK3PXP"
-            ),
-            OtpItem(
-                id = "3",
-                issuer = "GitHub",
-                accountName = "developer@github.com",
-                secret = "JBSWY3DPEHPK3PXP"
-            ),
-            OtpItem(
-                id = "4",
-                issuer = "Facebook",
-                accountName = "user@facebook.com",
-                secret = "JBSWY3DPEHPK3PXP"
-            ),
-            OtpItem(
-                id = "5",
-                issuer = "Twitter",
-                accountName = "@username",
-                secret = "JBSWY3DPEHPK3PXP"
-            )
-        )
-    }
-
     private fun observeQrScanResult() {
-        // For now, we'll handle QR results through a simpler approach
-        // This can be enhanced later with proper navigation state handling
+        // Listen for QR scan results from the scanner fragment
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<Bundle>("qr_result")
+            ?.observe(viewLifecycleOwner) { bundle: Bundle? ->
+                bundle?.let { result: Bundle ->
+                    val issuer = result.getString("issuer") ?: "Unknown Service"
+                    val accountName = result.getString("account_name") ?: "User Account"
+                    val email = result.getString("email") ?: ""
+                    val secret = result.getString("secret") ?: ""
+                    val period = result.getInt("period", 30)
+                    val algorithm = result.getString("algorithm") ?: "SHA1"
+                    val digits = result.getInt("digit", 6)
+
+                    if (secret.isNotEmpty()) {
+                        val newOtpItem = OtpItem(
+                            id = java.util.UUID.randomUUID().toString(),
+                            issuer = issuer,
+                            accountName = accountName,
+                            secret = secret,
+                            period = period,
+                            algorithm = algorithm,
+                            digits = digits
+                        )
+                        
+                        // Add new OTP item to the list
+                        otpAdapter.updateOtpItems(newOtpItem)
+                        
+                        // Show success message
+                        android.widget.Toast.makeText(
+                            requireContext(),
+                            "Added: $issuer - $accountName",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
     }
 
     override fun onDestroyView() {

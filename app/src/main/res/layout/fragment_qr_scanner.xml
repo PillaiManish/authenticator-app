@@ -13,18 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Overlay with scanning area -->
+    <!-- Scanning overlay with transparent center -->
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80000000" />
-
-    <!-- Scanning frame -->
-    <View
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:background="@drawable/scanning_frame" />
+        android:background="@drawable/scanning_overlay" />
 
     <!-- Instructions -->
     <TextView
