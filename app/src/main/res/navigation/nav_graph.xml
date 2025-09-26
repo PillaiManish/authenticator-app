@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/TabularDataFragment">
 
     <fragment
         android:id="@+id/FirstFragment"
@@ -25,4 +25,14 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/TabularDataFragment"
+        android:name="dev.pillaimanish.authenticator.TabularDataFragment"
+        android:label="@string/tabular_data_fragment_label"
+        tools:layout="@layout/fragment_tabular_data" />
+    <fragment
+        android:id="@+id/QrScannerFragment"
+        android:name="dev.pillaimanish.authenticator.QrScannerFragment"
+        android:label="@string/qr_scanner_fragment_label"
+        tools:layout="@layout/fragment_qr_scanner" />
 </navigation>

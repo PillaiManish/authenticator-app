@@ -29,9 +29,9 @@ private lateinit var binding: ActivityMainBinding
         setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null)
-                    .setAnchorView(R.id.fab).show()
+            // Navigate to QR scanner to add new OTP account
+            val navController = findNavController(R.id.nav_host_fragment_content_main)
+            navController.navigate(R.id.QrScannerFragment)
         }
     }
 override fun onCreateOptionsMenu(menu: Menu): Boolean {

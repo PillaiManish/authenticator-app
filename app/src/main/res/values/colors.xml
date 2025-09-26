@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- OTP App Colors - Light Theme -->
+    <color name="primary_color">#FF2196F3</color>
+    <color name="primary_dark">#FF1976D2</color>
+    <color name="otp_background">#FFF5F5F5</color>
+    <color name="otp_border">#FFE0E0E0</color>
+    <color name="otp_text_primary">#FF212121</color>
+    <color name="otp_text_secondary">#FF757575</color>
+    <color name="card_background">#FFFFFFFF</color>
+    <color name="account_icon_background">#FF2196F3</color>
 </resources>
