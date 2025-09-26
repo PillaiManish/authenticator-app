@@ -1,17 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/background_primary"
     tools:context=".TabularDataFragment">
 
+    <!-- App Header with Logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="@color/surface_color">
+
+        <!-- App Logo -->
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/app_logo"
+            android:layout_marginEnd="12dp" />
+
+        <!-- App Title -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Authenticator"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:fontFamily="sans-serif-medium" />
+
+    </LinearLayout>
+
+    <!-- OTP List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tabular_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:padding="8dp"
         android:clipToPadding="false"
+        android:scrollbars="vertical"
+        android:fadeScrollbars="true"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbarThumbVertical="@drawable/scrollbar_thumb"
+        android:scrollbarTrackVertical="@drawable/scrollbar_track"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-</FrameLayout>
+
+</LinearLayout>

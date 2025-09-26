@@ -2,7 +2,7 @@
     <string name="app_name">Authenticator</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="tabular_data_fragment_label">OTP Codes</string>
+    <string name="tabular_data_fragment_label">Authenticator</string>
     <string name="qr_scanner_fragment_label">Scan QR Code</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>

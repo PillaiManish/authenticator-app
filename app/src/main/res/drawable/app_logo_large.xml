@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+    
+    <!-- Background Circle with Gradient Effect -->
+    <path
+        android:fillColor="@color/accent_color"
+        android:pathData="M48,48m-48,0a48,48 0,1 1,96 0a48,48 0,1 1,-96 0" />
+    
+    <!-- Inner Circle -->
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M48,8L72,16v24c0,17.6 -14.4,32 -32,32s-32,-14.4 -32,-32V16L48,8z" />
+    
+    <!-- Lock Body -->
+    <path
+        android:fillColor="@color/accent_color"
+        android:pathData="M48,36c-4.4,0 -8,3.6 -8,8v4h16v-4C56,39.6 52.4,36 48,36z" />
+    
+    <path
+        android:fillColor="@color/accent_color"
+        android:pathData="M40,48v4c0,4.4 3.6,8 8,8s8,-3.6 8,-8v-4H40z" />
+    
+    <!-- Keyhole -->
+    <path
+        android:fillColor="@color/accent_color"
+        android:pathData="M48,48m-4,0a4,4 0,1 1,8 0a4,4 0,1 1,-8 0" />
+    
+    <path
+        android:fillColor="@color/accent_color"
+        android:pathData="M48,60v8" />
+    
+    <!-- Security Lines -->
+    <path
+        android:strokeColor="@color/accent_color"
+        android:strokeWidth="2"
+        android:pathData="M32,20L40,28M56,20L64,28" />
+</vector>

@@ -35,10 +35,8 @@ class TabularDataFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        // Only setup if not already initialized (prevents duplication on theme changes)
-        if (!::otpAdapter.isInitialized) {
-            setupRecyclerView()
-        }
+        // Always setup RecyclerView to ensure it's properly initialized
+        setupRecyclerView()
         observeQrScanResult()
     }
     
@@ -47,10 +45,18 @@ class TabularDataFragment : Fragment() {
         // Refresh all OTPs when app resumes (handles device restart case)
         if (::otpAdapter.isInitialized) {
             otpAdapter.refreshAllOtps()
+        } else {
+            // If adapter is not initialized, setup RecyclerView
+            setupRecyclerView()
         }
     }
 
     private fun setupRecyclerView() {
+        // Stop existing timer if adapter exists
+        if (::otpAdapter.isInitialized) {
+            otpAdapter.stopTimer()
+        }
+        
         otpAdapter = OtpAdapter(requireContext()) { otpItem ->
             // Handle OTP item click - could copy to clipboard, show details, etc.
             copyOtpToClipboard(otpItem.generateCurrentOtp())
@@ -94,11 +100,10 @@ class TabularDataFragment : Fragment() {
                     ).show()
                 }
                 
-                // Restore the item if user cancels (handled in dialog)
+                // Always restore the item position (dialog will handle the rest)
                 otpAdapter.notifyItemChanged(position)
             }
             
-            @SuppressLint("UseCompatLoadingForDrawables")
             override fun onChildDraw(
                 c: android.graphics.Canvas,
                 recyclerView: RecyclerView,
@@ -108,14 +113,15 @@ class TabularDataFragment : Fragment() {
                 actionState: Int,
                 isCurrentlyActive: Boolean
             ) {
-                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX > 0) {
                     val itemView = viewHolder.itemView
+                    
+                    // Create a subtle red background
                     val background = android.graphics.drawable.ColorDrawable(
                         requireContext().getColor(android.R.color.holo_red_dark)
                     )
-                    val deleteIcon = requireContext().getDrawable(android.R.drawable.ic_menu_delete)
                     
-                    // Draw background
+                    // Draw background with smooth animation
                     background.setBounds(
                         itemView.left,
                         itemView.top,
@@ -125,13 +131,16 @@ class TabularDataFragment : Fragment() {
                     background.draw(c)
                     
                     // Draw delete icon
+                    val deleteIcon = requireContext().getDrawable(android.R.drawable.ic_menu_delete)
                     deleteIcon?.let { icon ->
-                        val iconSize = icon.intrinsicHeight
+                        val iconSize = 48.dpToPx()
                         val iconMargin = (itemView.height - iconSize) / 2
+                        val iconLeft = itemView.left + 16.dpToPx()
+                        
                         icon.setBounds(
-                            itemView.left + iconMargin,
+                            iconLeft,
                             itemView.top + iconMargin,
-                            itemView.left + iconMargin + iconSize,
+                            iconLeft + iconSize,
                             itemView.top + iconMargin + iconSize
                         )
                         icon.draw(c)
@@ -139,9 +148,21 @@ class TabularDataFragment : Fragment() {
                 }
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
+            
+            override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                return ItemTouchHelper.RIGHT
+            }
+            
+            override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+                return makeMovementFlags(0, ItemTouchHelper.RIGHT)
+            }
         })
         
         itemTouchHelper.attachToRecyclerView(binding.tabularRecyclerView)
+    }
+    
+    private fun Int.dpToPx(): Int {
+        return (this * requireContext().resources.displayMetrics.density).toInt()
     }
     
     private fun showDeleteConfirmationDialog(otpItem: OtpItem, onConfirm: () -> Unit) {
